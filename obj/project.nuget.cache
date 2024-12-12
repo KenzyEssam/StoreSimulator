@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "5MCtCLGxo1Q2lxupPx2jHnUELK8jQco4LUziWI0OTofNdYtuIlUWKSjBkNFDginZ2+2jOxhEdfhxek+vdLXK9g==",
+  "success": true,
+  "projectFilePath": "D:\\Kenzy Essam\\project pl3\\MyStoreSimulator-20241212T204007Z-001\\MyStoreSimulator\\MyStoreSimulator.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kenzy\\.nuget\\packages\\fsharp.core\\8.0.200\\fsharp.core.8.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}

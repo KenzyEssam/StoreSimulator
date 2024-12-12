@@ -18,3 +18,15 @@ let productCatalog = [
     { Name = "E-Reader"; Price = 150m; Description = "Compact and glare-free e-reader" }
 
 ]
+
+
+let cart = ref [] 
+
+let form = new Form(Text = "Store Simulator", Width = 800, Height = 600, BackColor = Color.FromArgb(242, 242, 242)) 
+form.StartPosition <- FormStartPosition.CenterScreen
+form.Font <- new Font("Segoe UI", 10.0f)
+
+let catalogPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
+let catalogListBox = new ListBox(Width = 500, Height = 350, Font = new Font("Segoe UI", 14.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.White, BorderStyle = BorderStyle.None)
+catalogListBox.SelectionMode <- SelectionMode.One
+catalogListBox.ItemHeight <- 80

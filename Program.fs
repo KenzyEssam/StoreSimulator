@@ -49,3 +49,30 @@ viewCartButton.FlatStyle <- FlatStyle.Flat
 viewCartButton.FlatAppearance.BorderSize <- 0
 viewCartButton.MouseEnter.Add(fun _ -> viewCartButton.BackColor <- Color.FromArgb(0, 105, 217)) 
 viewCartButton.MouseLeave.Add(fun _ -> viewCartButton.BackColor <- Color.FromArgb(0, 123, 255))
+
+catalogPanel.Controls.Add(catalogListBox)
+catalogPanel.Controls.Add(addToCartButton)
+catalogPanel.Controls.Add(viewCartButton)
+
+let cartPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
+let cartListBox = new ListBox(Width = 300, Height = 350, Font = new Font("Segoe UI", 10.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.White, BorderStyle = BorderStyle.None)
+cartListBox.SelectionMode <- SelectionMode.One
+cartListBox.ItemHeight <- 40
+
+let removeFromCartButton = new Button(Text = "Remove from Cart", Width = 250, Height = 50, BackColor = Color.FromArgb(255, 0, 0), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+removeFromCartButton.Top <- 380
+removeFromCartButton.Left <- 20
+removeFromCartButton.FlatStyle <- FlatStyle.Flat
+removeFromCartButton.FlatAppearance.BorderSize <- 0
+removeFromCartButton.MouseEnter.Add(fun _ -> removeFromCartButton.BackColor <- Color.FromArgb(217, 0, 0)) 
+removeFromCartButton.MouseLeave.Add(fun _ -> removeFromCartButton.BackColor <- Color.FromArgb(255, 0, 0))
+
+let totalLabel = new Label(Text = "Total: $0.00", Font = new Font("Segoe UI", 14.0f), Top = 450, Left = 20, Width = 530, ForeColor = Color.FromArgb(51, 51, 51), TextAlign = ContentAlignment.MiddleLeft)
+
+let checkoutButton = new Button(Text = "Checkout", Width = 250, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+checkoutButton.Top <- 510
+checkoutButton.Left <- 20
+checkoutButton.FlatStyle <- FlatStyle.Flat
+checkoutButton.FlatAppearance.BorderSize <- 0
+checkoutButton.MouseEnter.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+checkoutButton.MouseLeave.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))

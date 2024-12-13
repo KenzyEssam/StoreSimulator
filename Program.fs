@@ -30,3 +30,22 @@ let catalogPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
 let catalogListBox = new ListBox(Width = 500, Height = 350, Font = new Font("Segoe UI", 14.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.White, BorderStyle = BorderStyle.None)
 catalogListBox.SelectionMode <- SelectionMode.One
 catalogListBox.ItemHeight <- 80
+
+for product in productCatalog do
+    catalogListBox.Items.Add($"{product.Name} - ${product.Price}: {product.Description}") |> ignore
+
+let addToCartButton = new Button(Text = "Add to Cart", Width = 250, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+addToCartButton.Top <- 380
+addToCartButton.Left <- 20
+addToCartButton.FlatStyle <- FlatStyle.Flat
+addToCartButton.FlatAppearance.BorderSize <- 0
+addToCartButton.MouseEnter.Add(fun _ -> addToCartButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+addToCartButton.MouseLeave.Add(fun _ -> addToCartButton.BackColor <- Color.FromArgb(0, 123, 255))
+
+let viewCartButton = new Button(Text = "View Cart", Width = 250, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+viewCartButton.Top <- 450
+viewCartButton.Left <- 20
+viewCartButton.FlatStyle <- FlatStyle.Flat
+viewCartButton.FlatAppearance.BorderSize <- 0
+viewCartButton.MouseEnter.Add(fun _ -> viewCartButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+viewCartButton.MouseLeave.Add(fun _ -> viewCartButton.BackColor <- Color.FromArgb(0, 123, 255))

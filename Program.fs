@@ -76,3 +76,12 @@ checkoutButton.FlatStyle <- FlatStyle.Flat
 checkoutButton.FlatAppearance.BorderSize <- 0
 checkoutButton.MouseEnter.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 105, 217)) 
 checkoutButton.MouseLeave.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
+
+backButton.Click.Add(fun _ ->
+    form.Controls.Clear()
+    form.Controls.Add(catalogPanel)
+    catalogPanel.Visible <- true
+    form.BackgroundImage <- null 
+    catalogPanel.Visible <- true
+    cartPanel.Visible <- true
+)

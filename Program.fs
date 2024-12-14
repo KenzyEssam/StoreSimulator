@@ -77,11 +77,55 @@ checkoutButton.FlatAppearance.BorderSize <- 0
 checkoutButton.MouseEnter.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 105, 217)) 
 checkoutButton.MouseLeave.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
 
+<<<<<<< HEAD
 backButton.Click.Add(fun _ ->
     form.Controls.Clear()
     form.Controls.Add(catalogPanel)
     catalogPanel.Visible <- true
     form.BackgroundImage <- null 
     catalogPanel.Visible <- true
+=======
+cartPanel.Controls.Add(cartListBox)
+cartPanel.Controls.Add(removeFromCartButton)
+cartPanel.Controls.Add(totalLabel)
+cartPanel.Controls.Add(checkoutButton)
+
+let backButton = new Button(Text = "Back", Width = 100, Height = 40, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 10.0f))
+backButton.Top <- 20
+backButton.Left <- 660
+backButton.FlatStyle <- FlatStyle.Flat
+backButton.FlatAppearance.BorderSize <- 0
+backButton.MouseEnter.Add(fun  -> backButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+backButton.MouseLeave.Add(fun  -> backButton.BackColor <- Color.FromArgb(0, 123, 255))
+cartPanel.Controls.Add(backButton)
+
+
+try
+    form.BackgroundImage <- Image.FromFile(@"shopbackground.jpg") 
+    form.BackgroundImageLayout <- ImageLayout.Stretch
+with
+| ex -> MessageBox.Show("Error loading image: " + ex.Message) |> ignore
+
+let shopNowButton = new Button(Text = "Shop Now", Width = 200, Height = 60, BackColor = Color.FromArgb(0, 0, 139), ForeColor = Color.White, Font = new Font("Segoe UI", 14.0f, FontStyle.Bold))
+shopNowButton.Left <- (form.ClientSize.Width - shopNowButton.Width) / 2
+shopNowButton.Top <- (form.ClientSize.Height - shopNowButton.Height) / 2 + 240
+shopNowButton.FlatStyle <- FlatStyle.Flat
+shopNowButton.FlatAppearance.BorderSize <- 0
+form.Controls.Add(shopNowButton)
+
+
+shopNowButton.Click.Add(fun  -> 
+    form.Controls.Clear()
+    form.Controls.Add(catalogPanel)
+    catalogPanel.Visible <- true
+)
+
+viewCartButton.Click.Add(fun _ ->
+    cartListBox.Items.Clear()
+    for product in !cart do
+        cartListBox.Items.Add($"{product.Name} - ${product.Price}")  |> ignore
+    form.Controls.Clear()
+    form.Controls.Add(cartPanel)
+>>>>>>> 791fe327c2f86516c4528b2f7630cac4866201a3
     cartPanel.Visible <- true
 )

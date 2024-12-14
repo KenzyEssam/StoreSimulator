@@ -129,3 +129,14 @@ viewCartButton.Click.Add(fun _ ->
 >>>>>>> 791fe327c2f86516c4528b2f7630cac4866201a3
     cartPanel.Visible <- true
 )
+
+addToCartButton.Click.Add(fun _ -> 
+    if catalogListBox.SelectedItem <> null then
+        let selectedItem = catalogListBox.SelectedItem.ToString().Split('-').[0].Trim()
+        match productCatalog |> List.tryFind (fun p -> p.Name = selectedItem) with
+        | Some product ->
+            cart := product :: !cart
+            MessageBox.Show($"{product.Name} has been added to the cart.", "Added", MessageBoxButtons.OK, MessageBoxIcon.Information) |> ignore
+        | None -> MessageBox.Show("Error adding product to the cart.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
+    else MessageBox.Show("Please select a product first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
+)

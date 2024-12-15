@@ -119,18 +119,15 @@ removeFromCartButton.MouseLeave.Add(fun _ -> removeFromCartButton.BackColor <- C
 
 let totalLabel = new Label(Text = "Total: $0.00", Font = new Font("Segoe UI", 14.0f), Top = 450, Left = 20, Width = 530, ForeColor = Color.FromArgb(51, 51, 51), TextAlign = ContentAlignment.MiddleLeft)
 
-let checkoutButton = new Button(Text = "Checkout", Width = 250, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
-checkoutButton.Top <- 510
-checkoutButton.Left <- 20
-checkoutButton.FlatStyle <- FlatStyle.Flat
+let checkoutButton = new Button(Text = "Checkout", Width = 200, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+checkoutButton.Top <- 380
+checkoutButton.Left <- removeFromCartButton.Left + removeFromCartButton.Width + 180 
+checkoutButton.FlatStyle <- FlatStyle.Standard
 checkoutButton.FlatAppearance.BorderSize <- 0
-checkoutButton.MouseEnter.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 105, 217)) 
-checkoutButton.MouseLeave.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
+checkoutButton.MouseEnter.Add(fun  -> checkoutButton.BackColor <- Color.FromArgb(144, 238, 144)) 
+checkoutButton.MouseLeave.Add(fun  -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
 
-cartPanel.Controls.Add(cartListBox)
-cartPanel.Controls.Add(removeFromCartButton)
-cartPanel.Controls.Add(totalLabel)
-cartPanel.Controls.Add(checkoutButton)
+
 
 let backButton = new Button(Text = "Back", Width = 100, Height = 40, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 10.0f))
 backButton.Top <- 20
@@ -139,7 +136,29 @@ backButton.FlatStyle <- FlatStyle.Flat
 backButton.FlatAppearance.BorderSize <- 0
 backButton.MouseEnter.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 105, 217)) 
 backButton.MouseLeave.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 123, 255))
+
+let makeRoundedButton (button: Button) =
+    let roundedRect = new Drawing2D.GraphicsPath()
+    roundedRect.AddArc(0.0f, 0.0f, 20.0f, 20.0f, 180.0f, 90.0f) // Top-left corner
+    roundedRect.AddArc(float32 (button.Width - 20), 0.0f, 20.0f, 20.0f, 270.0f, 90.0f) // Top-right corner
+    roundedRect.AddArc(float32 (button.Width - 20), float32 (button.Height - 20), 20.0f, 20.0f, 0.0f, 90.0f) // Bottom-right corner
+    roundedRect.AddArc(0.0f, float32 (button.Height - 20), 20.0f, 20.0f, 90.0f, 90.0f) // Bottom-left corner
+    roundedRect.CloseFigure()
+    button.Region <- new Region(roundedRect)
+
+makeRoundedButton addToCartButton
+makeRoundedButton viewCartButton
+makeRoundedButton removeFromCartButton
+makeRoundedButton checkoutButton
+makeRoundedButton backButton
+makeRoundedButton shopNowButton
+
+cartPanel.Controls.Add(cartListBox)
+cartPanel.Controls.Add(removeFromCartButton)
+cartPanel.Controls.Add(totalLabel)
+cartPanel.Controls.Add(checkoutButton)
 cartPanel.Controls.Add(backButton)
+
 
 // Functionality
 shopNowButton.Click.Add(fun _ -> 

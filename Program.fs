@@ -20,12 +20,14 @@ let productCatalog = [
 ]
 
 
-let cart = ref [] 
+let cart = ref [] // Using a reference to hold the list for mutability
 
+// Create the main form
 let form = new Form(Text = "Store Simulator", Width = 800, Height = 600, BackColor = Color.FromArgb(242, 242, 242)) 
 form.StartPosition <- FormStartPosition.CenterScreen
 form.Font <- new Font("Segoe UI", 10.0f)
 
+// Catalog Panel
 let catalogPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
 let catalogListBox = new ListBox(Width = 500, Height = 350, Font = new Font("Segoe UI", 14.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.White, BorderStyle = BorderStyle.None)
 catalogListBox.SelectionMode <- SelectionMode.One
@@ -54,6 +56,7 @@ catalogPanel.Controls.Add(catalogListBox)
 catalogPanel.Controls.Add(addToCartButton)
 catalogPanel.Controls.Add(viewCartButton)
 
+// Cart Panel
 let cartPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
 let cartListBox = new ListBox(Width = 300, Height = 350, Font = new Font("Segoe UI", 10.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.White, BorderStyle = BorderStyle.None)
 cartListBox.SelectionMode <- SelectionMode.One
@@ -75,16 +78,8 @@ checkoutButton.Left <- 20
 checkoutButton.FlatStyle <- FlatStyle.Flat
 checkoutButton.FlatAppearance.BorderSize <- 0
 checkoutButton.MouseEnter.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 105, 217)) 
-checkoutButton.MouseLeave.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
+checkoutButton.MouseLeave.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
 
-<<<<<<< HEAD
-backButton.Click.Add(fun _ ->
-    form.Controls.Clear()
-    form.Controls.Add(catalogPanel)
-    catalogPanel.Visible <- true
-    form.BackgroundImage <- null 
-    catalogPanel.Visible <- true
-=======
 cartPanel.Controls.Add(cartListBox)
 cartPanel.Controls.Add(removeFromCartButton)
 cartPanel.Controls.Add(totalLabel)
@@ -95,13 +90,13 @@ backButton.Top <- 20
 backButton.Left <- 660
 backButton.FlatStyle <- FlatStyle.Flat
 backButton.FlatAppearance.BorderSize <- 0
-backButton.MouseEnter.Add(fun  -> backButton.BackColor <- Color.FromArgb(0, 105, 217)) 
-backButton.MouseLeave.Add(fun  -> backButton.BackColor <- Color.FromArgb(0, 123, 255))
+backButton.MouseEnter.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+backButton.MouseLeave.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 123, 255))
 cartPanel.Controls.Add(backButton)
 
-
+// Initial Welcome Screen
 try
-    form.BackgroundImage <- Image.FromFile(@"shopbackground.jpg") 
+    form.BackgroundImage <- Image.FromFile(@"shop_background.jpg") 
     form.BackgroundImageLayout <- ImageLayout.Stretch
 with
 | ex -> MessageBox.Show("Error loading image: " + ex.Message) |> ignore
@@ -113,8 +108,8 @@ shopNowButton.FlatStyle <- FlatStyle.Flat
 shopNowButton.FlatAppearance.BorderSize <- 0
 form.Controls.Add(shopNowButton)
 
-
-shopNowButton.Click.Add(fun  -> 
+// Functionality
+shopNowButton.Click.Add(fun _ -> 
     form.Controls.Clear()
     form.Controls.Add(catalogPanel)
     catalogPanel.Visible <- true
@@ -126,7 +121,15 @@ viewCartButton.Click.Add(fun _ ->
         cartListBox.Items.Add($"{product.Name} - ${product.Price}")  |> ignore
     form.Controls.Clear()
     form.Controls.Add(cartPanel)
->>>>>>> 791fe327c2f86516c4528b2f7630cac4866201a3
+    cartPanel.Visible <- true
+)
+
+backButton.Click.Add(fun _ ->
+    form.Controls.Clear()
+    form.Controls.Add(catalogPanel)
+    catalogPanel.Visible <- true
+    form.BackgroundImage <- null // Disable background image
+    catalogPanel.Visible <- true
     cartPanel.Visible <- true
 )
 

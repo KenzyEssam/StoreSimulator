@@ -1,24 +1,17 @@
 ﻿type Product = { Name: string; Price: decimal; Description: string }
 
-let productCatalog = [
-    { Name = "Laptop"; Price = 1000m; Description = "High performance laptop" }
-    { Name = "Smartphone"; Price = 500m; Description = "Latest model smartphone" }
-    { Name = "Headphones"; Price = 100m; Description = "Noise-cancelling headphones" }
-    { Name = "Keyboard"; Price = 50m; Description = "Mechanical keyboard" }
-    { Name = "Mouse"; Price = 30m; Description = "Wireless mouse" }
-    { Name = "Tablet"; Price = 400m; Description = "Lightweight and powerful tablet" }
-    { Name = "Smartwatch"; Price = 200m; Description = "Feature-rich smartwatch" }
-    { Name = "Monitor"; Price = 300m; Description = "4K Ultra HD monitor" }
-    { Name = "Speaker"; Price = 150m; Description = "Bluetooth portable speaker" }
-    { Name = "Camera"; Price = 800m; Description = "DSLR camera with advanced features" }
-    { Name = "Gaming Console"; Price = 500m; Description = "Next-gen gaming console" }
-    { Name = "Drone"; Price = 700m; Description = "High-resolution camera drone" }
-    { Name = "Router"; Price = 100m; Description = "High-speed Wi-Fi router" }
-    { Name = "External Hard Drive"; Price = 120m; Description = "1TB portable hard drive" }
-    { Name = "E-Reader"; Price = 150m; Description = "Compact and glare-free e-reader" }
+type Product = { Name: string; Price: decimal; Description: string }
 
-]
+let loadProducts filePath =
+    try
+        let json = File.ReadAllText(filePath)
+        JsonSerializer.Deserialize<Product list>(json)
+    with
+    | ex -> 
+        MessageBox.Show($"Error loading products: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
+        []
 
+let productCatalog = loadProducts @"Products.json"
 
 let cart = ref [] // Using a reference to hold the list for mutability
 
@@ -26,6 +19,20 @@ let cart = ref [] // Using a reference to hold the list for mutability
 let form = new Form(Text = "Store Simulator", Width = 800, Height = 600, BackColor = Color.FromArgb(242, 242, 242)) 
 form.StartPosition <- FormStartPosition.CenterScreen
 form.Font <- new Font("Segoe UI", 10.0f)
+
+// Initial Welcome Screen
+try
+    form.BackgroundImage <- Image.FromFile(@"shop_background.jpg") 
+    form.BackgroundImageLayout <- ImageLayout.Stretch
+with
+| ex -> MessageBox.Show("Error loading image: " + ex.Message) |> ignore
+
+let shopNowButton = new Button(Text = "Shop Now", Width = 200, Height = 60, BackColor = Color.FromArgb(0, 0, 139), ForeColor = Color.White, Font = new Font("Segoe UI", 14.0f, FontStyle.Bold))
+shopNowButton.Left <- (form.ClientSize.Width - shopNowButton.Width) / 2
+shopNowButton.Top <- (form.ClientSize.Height - shopNowButton.Height) / 2 + 240
+shopNowButton.FlatStyle <- FlatStyle.Flat
+shopNowButton.FlatAppearance.BorderSize <- 0
+form.Controls.Add(shopNowButton)
 
 // Catalog Panel
 let catalogPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
@@ -35,6 +42,27 @@ catalogListBox.ItemHeight <- 80
 
 for product in productCatalog do
     catalogListBox.Items.Add($"{product.Name} - ${product.Price}: {product.Description}") |> ignore
+
+
+catalogListBox.DrawItem.Add(fun e ->
+    if e.Index >= 0 then
+        let itemText = catalogListBox.Items.[e.Index].ToString()
+        
+        let productNameEndIndex = itemText.IndexOf(" -")
+        let productName = itemText.Substring(0, productNameEndIndex)
+        let restOfText = itemText.Substring(productNameEndIndex)
+
+        let boldFont = new Font("Segoe UI", 16.0f, FontStyle.Bold)
+        let regularFont = new Font("Segoe UI", 16.0f, FontStyle.Regular)
+
+        let baseColor =
+            if isHovered then Color.FromArgb(0, 120, 215) 
+            else if isFocused then Color.FromArgb(173, 216, 230) 
+            else Color.FromArgb(173, 216, 230) 
+
+        let textColor = Color.White 
+
+)
 
 let addToCartButton = new Button(Text = "Add to Cart", Width = 250, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
 addToCartButton.Top <- 380
@@ -94,20 +122,6 @@ backButton.MouseEnter.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 105
 backButton.MouseLeave.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 123, 255))
 cartPanel.Controls.Add(backButton)
 
-// Initial Welcome Screen
-try
-    form.BackgroundImage <- Image.FromFile(@"shop_background.jpg") 
-    form.BackgroundImageLayout <- ImageLayout.Stretch
-with
-| ex -> MessageBox.Show("Error loading image: " + ex.Message) |> ignore
-
-let shopNowButton = new Button(Text = "Shop Now", Width = 200, Height = 60, BackColor = Color.FromArgb(0, 0, 139), ForeColor = Color.White, Font = new Font("Segoe UI", 14.0f, FontStyle.Bold))
-shopNowButton.Left <- (form.ClientSize.Width - shopNowButton.Width) / 2
-shopNowButton.Top <- (form.ClientSize.Height - shopNowButton.Height) / 2 + 240
-shopNowButton.FlatStyle <- FlatStyle.Flat
-shopNowButton.FlatAppearance.BorderSize <- 0
-form.Controls.Add(shopNowButton)
-
 // Functionality
 shopNowButton.Click.Add(fun _ -> 
     form.Controls.Clear()
@@ -159,3 +173,6 @@ removeFromCartButton.Click.Add(fun _ ->
         | None -> MessageBox.Show("Error removing product from the cart.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
     else MessageBox.Show("Please select a product to remove.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
 )
+
+[<STAThread>]
+Application.Run(form)

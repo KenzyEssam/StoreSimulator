@@ -1,0 +1,16 @@
+[
+    { "Name": "Apple MacBook Pro", "Price": 1000, "Description": "High-performance laptop with Apple M1 chip and retina display." },
+    { "Name": "Samsung Galaxy S21", "Price": 500, "Description": "Latest smartphone with AMOLED display and powerful camera." },
+    { "Name": "Logitech G Pro X", "Price": 50, "Description": "Gaming keyboard with RGB lighting and customizable switches." },
+    { "Name": "Logitech MX Master 3", "Price": 30, "Description": "Wireless mouse with ergonomic design and precision tracking." },
+    { "Name": "Apple iPad Air", "Price": 400, "Description": "Lightweight tablet with A14 Bionic chip and excellent performance." },
+    { "Name": "Samsung Galaxy Watch 4", "Price": 200, "Description": "Smartwatch with health tracking and seamless Android integration." },
+    { "Name": "JBL Flip 5", "Price": 150, "Description": "Portable Bluetooth speaker with deep bass and waterproof design." },
+    { "Name": "Canon EOS Rebel T7", "Price": 800, "Description": "DSLR camera with 24.1MP sensor and Full HD video recording." },
+    { "Name": "PlayStation 5", "Price": 500, "Description": "Next-gen gaming console with 4K gaming and fast load times." },
+    { "Name": "DJI Air 2S", "Price": 700, "Description": "Camera drone with 5.4K video and intelligent flight modes." },
+    { "Name": "Netgear Nighthawk AX12", "Price": 100, "Description": "Wi-Fi 6 router with ultra-fast performance and enhanced security." },
+    { "Name": "Seagate Backup Plus", "Price": 120, "Description": "1TB portable hard drive with fast transfer speeds." },
+    { "Name": "Kindle Paperwhite", "Price": 150, "Description": "Glare-free e-reader with built-in light for reading anywhere." }
+  ]
+  

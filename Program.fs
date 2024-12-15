@@ -35,10 +35,17 @@ shopNowButton.FlatAppearance.BorderSize <- 0
 form.Controls.Add(shopNowButton)
 
 // Catalog Panel
-let catalogPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
-let catalogListBox = new ListBox(Width = 500, Height = 350, Font = new Font("Segoe UI", 14.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.White, BorderStyle = BorderStyle.None)
+let catalogPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.FromArgb(211, 211, 211)) 
+let catalogListBox = new ListBox(
+    Width = 783, 
+    Height = 420, 
+    Font = new Font("Segoe UI", 16.0f), 
+    ForeColor = Color.FromArgb(51, 51, 51), 
+    BackColor =  Color.FromArgb(173, 216, 230), 
+    BorderStyle = BorderStyle.FixedSingle)
 catalogListBox.SelectionMode <- SelectionMode.One
-catalogListBox.ItemHeight <- 80
+catalogListBox.ItemHeight <- 100 
+catalogListBox.DrawMode <- DrawMode.OwnerDrawVariable
 
 for product in productCatalog do
     catalogListBox.Items.Add($"{product.Name} - ${product.Price}: {product.Description}") |> ignore
@@ -61,6 +68,18 @@ catalogListBox.DrawItem.Add(fun e ->
             else Color.FromArgb(173, 216, 230) 
 
         let textColor = Color.White 
+
+        use bgBrush = new SolidBrush(baseColor)
+        e.Graphics.FillRectangle(bgBrush, e.Bounds)
+
+        let productNameRect = new Rectangle(e.Bounds.X + 10, e.Bounds.Y + 10, e.Bounds.Width - 20, e.Bounds.Height)
+        TextRenderer.DrawText(e.Graphics, productName, boldFont, productNameRect, textColor, TextFormatFlags.Left)
+
+        let restTextRect = new Rectangle(e.Bounds.X + 10, e.Bounds.Y + 40, e.Bounds.Width - 20, e.Bounds.Height)
+        TextRenderer.DrawText(e.Graphics, restOfText, regularFont, restTextRect, textColor, TextFormatFlags.Left)
+
+        if isFocused then
+            ControlPaint.DrawFocusRectangle(e.Graphics, e.Bounds, textColor, baseColor)
 
 )
 

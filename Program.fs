@@ -143,3 +143,19 @@ addToCartButton.Click.Add(fun _ ->
         | None -> MessageBox.Show("Error adding product to the cart.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
     else MessageBox.Show("Please select a product first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
 )
+
+
+removeFromCartButton.Click.Add(fun _ ->
+    if cartListBox.SelectedItem <> null then
+        let selectedItem = cartListBox.SelectedItem.ToString().Split('-').[0].Trim()
+        match !cart |> List.tryFind (fun p -> p.Name = selectedItem) with
+        | Some product ->
+            match !cart |> List.tryFindIndex (fun p -> p.Name = selectedItem) with
+            | Some index ->
+                cart := List.mapi (fun i p -> if i = index then None else Some p) !cart |> List.choose id
+                cartListBox.Items.Remove(cartListBox.SelectedItem)
+                MessageBox.Show($"{product.Name} has been removed from the cart.", "Removed", MessageBoxButtons.OK, MessageBoxIcon.Information) |> ignore
+            | None -> MessageBox.Show("Error removing product from the cart.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
+        | None -> MessageBox.Show("Error removing product from the cart.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
+    else MessageBox.Show("Please select a product to remove.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) |> ignore
+)

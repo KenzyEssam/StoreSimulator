@@ -1,4 +1,8 @@
-﻿type Product = { Name: string; Price: decimal; Description: string }
+﻿open System
+open System.Drawing
+open System.Windows.Forms
+open System.IO
+open System.Text.Json
 
 type Product = { Name: string; Price: decimal; Description: string }
 
@@ -83,20 +87,20 @@ catalogListBox.DrawItem.Add(fun e ->
 
 )
 
-let addToCartButton = new Button(Text = "Add to Cart", Width = 250, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
-addToCartButton.Top <- 380
-addToCartButton.Left <- 20
-addToCartButton.FlatStyle <- FlatStyle.Flat
+let addToCartButton = new Button(Text = "Add to Cart", Width = 250, Height = 70, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+addToCartButton.Top <- 450
+addToCartButton.Left <- 70
+addToCartButton.FlatStyle <- FlatStyle.Standard
 addToCartButton.FlatAppearance.BorderSize <- 0
-addToCartButton.MouseEnter.Add(fun _ -> addToCartButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+addToCartButton.MouseEnter.Add(fun _ -> addToCartButton.BackColor <- Color.FromArgb(0, 0, 139)) 
 addToCartButton.MouseLeave.Add(fun _ -> addToCartButton.BackColor <- Color.FromArgb(0, 123, 255))
 
-let viewCartButton = new Button(Text = "View Cart", Width = 250, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+let viewCartButton = new Button(Text = "View Cart", Width = 250, Height = 70, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
 viewCartButton.Top <- 450
-viewCartButton.Left <- 20
-viewCartButton.FlatStyle <- FlatStyle.Flat
+viewCartButton.Left <- addToCartButton.Left + addToCartButton.Width + 140
+viewCartButton.FlatStyle <- FlatStyle.Standard
 viewCartButton.FlatAppearance.BorderSize <- 0
-viewCartButton.MouseEnter.Add(fun _ -> viewCartButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+viewCartButton.MouseEnter.Add(fun _ -> viewCartButton.BackColor <- Color.FromArgb(0, 0, 139)) 
 viewCartButton.MouseLeave.Add(fun _ -> viewCartButton.BackColor <- Color.FromArgb(0, 123, 255))
 
 catalogPanel.Controls.Add(catalogListBox)
@@ -104,37 +108,83 @@ catalogPanel.Controls.Add(addToCartButton)
 catalogPanel.Controls.Add(viewCartButton)
 
 // Cart Panel
-let cartPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.White)
-let cartListBox = new ListBox(Width = 300, Height = 350, Font = new Font("Segoe UI", 10.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.White, BorderStyle = BorderStyle.None)
+let cartPanel = new Panel(Dock = DockStyle.Fill, BackColor = Color.FromArgb(211, 211, 211))
+let cartListBox = new ListBox(Width = 600, Height = 350, Font = new Font("Segoe UI", 10.0f), ForeColor = Color.FromArgb(51, 51, 51), BackColor = Color.FromArgb(211, 211, 211) , BorderStyle = BorderStyle.FixedSingle)
 cartListBox.SelectionMode <- SelectionMode.One
 cartListBox.ItemHeight <- 40
+cartListBox.DrawMode <- DrawMode.OwnerDrawVariable
 
-let removeFromCartButton = new Button(Text = "Remove from Cart", Width = 250, Height = 50, BackColor = Color.FromArgb(255, 0, 0), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
+cartListBox.DrawItem.Add(fun e -> 
+    if e.Index >= 0 then
+        // Get the item text
+        let itemText = cartListBox.Items.[e.Index].ToString()
+
+        // Split the text into product name and price
+        let productNameEndIndex = itemText.IndexOf(" -")
+        let productName = itemText.Substring(0, productNameEndIndex)
+        let priceText = itemText.Substring(productNameEndIndex)
+
+        // Define fonts
+        let boldFont = new Font("Segoe UI", 16.0f, FontStyle.Bold)
+        let regularFont = new Font("Segoe UI", 16.0f, FontStyle.Regular)
+
+        // Determine the state of the current item
+        let isHovered = (e.State &&& DrawItemState.Selected) = DrawItemState.Selected
+        let isFocused = (e.State &&& DrawItemState.Focus) = DrawItemState.Focus
+
+        // Define background colors
+        let baseColor =
+            if isHovered then Color.FromArgb(0, 120, 215)  // Lighter blue for hover
+            else if isFocused then Color.FromArgb(173, 216, 230) // Light blue for focus
+            else Color.FromArgb(173, 216, 230) // Default light blue
+
+        let textColor = Color.White // White text for contrast on dark background
+
+        // Fill the background for the current item
+        use bgBrush = new SolidBrush(baseColor)
+        e.Graphics.FillRectangle(bgBrush, e.Bounds)
+
+        // Define space for product name and price on the same line
+        let nameWidth = e.Bounds.Width * 2 / 3 // Product name takes up 2/3 of the width
+        let priceWidth = e.Bounds.Width - nameWidth // Price takes up the remaining space
+
+        // Draw the product name in bold
+        let productNameRect = new Rectangle(e.Bounds.X + 10, e.Bounds.Y + 10, nameWidth - 20, e.Bounds.Height)
+        TextRenderer.DrawText(e.Graphics, productName, boldFont, productNameRect, textColor, TextFormatFlags.Left)
+
+        // Draw the price in regular font
+        let priceTextRect = new Rectangle(e.Bounds.X + nameWidth, e.Bounds.Y + 10, priceWidth - 20, e.Bounds.Height)
+        TextRenderer.DrawText(e.Graphics, priceText, regularFont, priceTextRect, textColor, TextFormatFlags.Left)
+
+        // Draw focus rectangle if the item has focus
+        if isFocused then
+            ControlPaint.DrawFocusRectangle(e.Graphics, e.Bounds, textColor, baseColor)
+)
+
+let removeFromCartButton = new Button(Text = "Remove", Width = 200, Height = 50, BackColor = Color.FromArgb(0, 0, 139), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
 removeFromCartButton.Top <- 380
 removeFromCartButton.Left <- 20
-removeFromCartButton.FlatStyle <- FlatStyle.Flat
+removeFromCartButton.FlatStyle <- FlatStyle.Standard
 removeFromCartButton.FlatAppearance.BorderSize <- 0
 removeFromCartButton.MouseEnter.Add(fun _ -> removeFromCartButton.BackColor <- Color.FromArgb(217, 0, 0)) 
-removeFromCartButton.MouseLeave.Add(fun _ -> removeFromCartButton.BackColor <- Color.FromArgb(255, 0, 0))
+removeFromCartButton.MouseLeave.Add(fun _ -> removeFromCartButton.BackColor <- Color.FromArgb(0, 0, 139))
 
 let totalLabel = new Label(Text = "Total: $0.00", Font = new Font("Segoe UI", 14.0f), Top = 450, Left = 20, Width = 530, ForeColor = Color.FromArgb(51, 51, 51), TextAlign = ContentAlignment.MiddleLeft)
 
 let checkoutButton = new Button(Text = "Checkout", Width = 200, Height = 50, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 12.0f, FontStyle.Bold))
-checkoutButton.Top <- 380
+checkoutButton.Top <- 380 // Same line as Remove button
 checkoutButton.Left <- removeFromCartButton.Left + removeFromCartButton.Width + 180 
 checkoutButton.FlatStyle <- FlatStyle.Standard
 checkoutButton.FlatAppearance.BorderSize <- 0
-checkoutButton.MouseEnter.Add(fun  -> checkoutButton.BackColor <- Color.FromArgb(144, 238, 144)) 
-checkoutButton.MouseLeave.Add(fun  -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
-
-
+checkoutButton.MouseEnter.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(144, 238, 144)) 
+checkoutButton.MouseLeave.Add(fun _ -> checkoutButton.BackColor <- Color.FromArgb(0, 123, 255))
 
 let backButton = new Button(Text = "Back", Width = 100, Height = 40, BackColor = Color.FromArgb(0, 123, 255), ForeColor = Color.White, Font = new Font("Segoe UI", 10.0f))
 backButton.Top <- 20
 backButton.Left <- 660
-backButton.FlatStyle <- FlatStyle.Flat
+backButton.FlatStyle <- FlatStyle.Standard
 backButton.FlatAppearance.BorderSize <- 0
-backButton.MouseEnter.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 105, 217)) 
+backButton.MouseEnter.Add(fun _ -> backButton.BackColor <- Color.FromArgb(173, 216, 230)) 
 backButton.MouseLeave.Add(fun _ -> backButton.BackColor <- Color.FromArgb(0, 123, 255))
 
 let makeRoundedButton (button: Button) =
